@@ -47,7 +47,8 @@ def parse_params(seg):  # [(name, type)] from "(T a, ?T b, k: T) -> R"
     for p in split_top(seg[1:end], ','):
         p = re.sub(r'^(\?|\*\*|\*)\s*', '', p.strip())
         m = re.match(r'^([a-z_]\w*):(?!:)\s*(.+)$', p)
-        if m: res.append((m.group(1), m.group(2)))
+        if m:
+            res.append((m.group(1), m.group(2)))
             continue
         m = re.match(r'^(.+)\s+([a-z_]\w*)$', p)
         if m and not m.group(1).rstrip().endswith(('|', '&')) and m.group(2) not in NOT_NAMES:
@@ -89,7 +90,8 @@ def make_pairs(recs, n, rng):  # balanced pairs: 50% same type, 50% different ty
         if i != j and (i, j) not in seen: seen.add((i, j)); pairs.append((i, j, 1))
     while len(pairs) < n:
         i, j = rng.integers(len(recs), size=2)
-        if recs[i]["type"] != recs[j]["type"] and (i, j) not in seen: seen.add((i, j)); pairs.append((int(i), int(j), 0))
+        i, j = int(i), int(j)
+        if recs[i]["type"] != recs[j]["type"] and (i, j) not in seen: seen.add((i, j)); pairs.append((i, j, 0))
     return pairs
 
 def build_stats(recs):  # type distributions per full name and per last name token
