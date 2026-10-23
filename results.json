@@ -1,0 +1,37 @@
+{
+  "question": "Can a class-balanced gradient-boosting model with richer name and context features predict whether two Ruby parameters have equal types better than a name-similarity threshold predictor, on held-out Ruby files?",
+  "method": "Pairs of parameters from ruby/rbs core+stdlib signatures (50% same declared type), split by signature file; baseline TF-IDF char n-gram cosine threshold vs class-balanced LightGBM on richer features, tuned by grouped CV on train.",
+  "dataset": {
+    "name": "ruby/rbs core and stdlib signatures (parameter pairs)",
+    "source_url": "https://codeload.github.com/ruby/rbs/zip/refs/heads/master",
+    "n_rows": 55000,
+    "n_train": 40000,
+    "n_test": 15000,
+    "same_as_paper": false,
+    "baseline_is_papers_method": false
+  },
+  "metric_name": "F1 of the equal-types class",
+  "higher_is_better": true,
+  "baseline": "Character n-gram TF-IDF cosine similarity of parameter names, threshold tuned on training pairs (stand-in for SimTyper's similarity-based predictor).",
+  "improved": "Class-balanced LightGBM on token Jaccard, edit ratio, shared prefix/suffix tokens, same method/class/file, method-name overlap, out-of-fold name-type agreement priors, name frequency and the cosine score.",
+  "metrics": {
+    "baseline_score": 0.6666666666666666,
+    "improved_score": 0.7266780973855971,
+    "improvement": 0.06001143071893045,
+    "baseline_score_std": 0.0,
+    "improved_score_std": 0.0011602678661179562,
+    "baseline_threshold": 0.0,
+    "improved_threshold": 0.32999999999999996,
+    "cv_auc_train_best": 0.7655125137500001,
+    "n_records": 4181,
+    "baseline_f1": 0.6666666666666666,
+    "improved_f1": 0.7266780973855971,
+    "baseline_precision": 0.5,
+    "improved_precision": 0.6283669918193356,
+    "baseline_recall": 1.0,
+    "improved_recall": 0.8614666666666667,
+    "baseline_auc": 0.6473125244444445,
+    "improved_auc": 0.8183791525925926
+  },
+  "notes": "Params parsed by regex from RBS (single-line defs, 'untyped' params dropped, types compared as exact strings). Pairs are sampled 50/50 within each file-grouped partition, so results depend on this synthetic balance. Train priors are out-of-fold by file; grouped CV reuses them, so CV is slightly optimistic. Baseline is deterministic (std 0); LightGBM averaged over seeds 42-44. Test set used once."
+}
